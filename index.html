@@ -1,0 +1,375 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>SpeakMath</title>
+	<style type="text/css">
+		.main {
+			padding: 5px;
+			background-color: rgba(57,41,192,1.00);
+			width: auto;
+			max-width: 400px;			
+			text-align: center;
+		}
+		.buttonrow {
+			padding: 5px;
+			background-color: rgba(38,181,216,1.00);
+			text-align: center;
+			width: auto;
+		}
+		.button {
+			width: 50px;
+			height: 50px;
+		}
+		
+		#numInput {
+			margin-top: 15px;
+			width: 200px;
+			text-align: center;
+		}
+		.button2 {
+			width: 75px;
+			margin-top: 10px;
+		}
+		#instructions {
+			font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+			font-size: 13px;
+			color: white;
+			margin-top: 20px;
+			display: block;
+		}
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+	<script>
+		var soundArr = [];
+		$(document).ready(loadSound)
+		function loadSound(jQ) {
+			
+			var queue = new createjs.LoadQueue();
+			queue.installPlugin(createjs.Sound);
+			queue.on("complete", handleComplete);
+			queue.loadManifest ([
+				{id:"n0", src:"./sounds/num/number0.mp3"},
+				{id:"n1", src:"./sounds/num/number1.mp3"},
+				{id:"n2", src:"./sounds/num/number2.mp3"},
+				{id:"n3", src:"./sounds/num/number3.mp3"},
+				{id:"n4", src:"./sounds/num/number4.mp3"},
+				{id:"n5", src:"./sounds/num/number5.mp3"},
+				{id:"n6", src:"./sounds/num/number6.mp3"},
+				{id:"n7", src:"./sounds/num/number7.mp3"},
+				{id:"n8", src:"./sounds/num/number8.mp3"},
+				{id:"n9", src:"./sounds/num/number9.mp3"},
+
+				{id:"n10", src:"./sounds/num/number10.mp3"},
+				{id:"n11", src:"./sounds/num/number11.mp3"},
+				{id:"n12", src:"./sounds/num/number12.mp3"},
+				{id:"n13", src:"./sounds/num/number13.mp3"},
+				{id:"n14", src:"./sounds/num/number14.mp3"},
+				{id:"n15", src:"./sounds/num/number15.mp3"},
+				{id:"n16", src:"./sounds/num/number16.mp3"},
+				{id:"n17", src:"./sounds/num/number17.mp3"},
+				{id:"n18", src:"./sounds/num/number18.mp3"},
+				{id:"n19", src:"./sounds/num/number19.mp3"},
+
+				{id:"n20", src:"./sounds/num/number20.mp3"},
+				{id:"n30", src:"./sounds/num/number30.mp3"},
+				{id:"n40", src:"./sounds/num/number40.mp3"},
+				{id:"n50", src:"./sounds/num/number50.mp3"},
+				{id:"n60", src:"./sounds/num/number60.mp3"},
+				{id:"n70", src:"./sounds/num/number70.mp3"},
+				{id:"n80", src:"./sounds/num/number80.mp3"},
+				{id:"n90", src:"./sounds/num/number90.mp3"},
+
+				{id:"nc", src:"./sounds/num/number_hundred.mp3"},
+				{id:"nk", src:"./sounds/num/number_thousand.mp3"},
+				{id:"nm", src:"./sounds/num/number_million.mp3"},
+
+				{id:"nd", src:"./sounds/num/number_decimal.mp3"},
+				{id:"nxth", src:"./sounds/num/number_tenth.mp3"},
+				{id:"nxths", src:"./sounds/num/number_tenths.mp3"},
+				{id:"ncth", src:"./sounds/num/number_hundreth.mp3"},
+				{id:"ncths", src:"./sounds/num/number_hundreths.mp3"},
+				{id:"nkths", src:"./sounds/num/number_thousanths.mp3"},
+				{id:"nerr", src:"./sounds/end/end_wrong.mp3"}
+			]);
+		}
+
+		function handleComplete () {
+			console.log("all loaded");
+			$(".main").css("visibility", "visible");
+			$("#b1").click(() => {
+				createjs.Sound.play("n1");
+				addNumber("1")
+			});
+			$("#b2").click(() => {
+				createjs.Sound.play("n2");
+				addNumber("2")
+			});
+			$("#b3").click(() => {
+				createjs.Sound.play("n3");
+				addNumber("3")
+			});
+			$("#b4").click(() => {
+				createjs.Sound.play("n4");
+				addNumber("4")
+			});
+			$("#b5").click(() => {
+				createjs.Sound.play("n5");
+				addNumber("5")
+			});
+			$("#b6").click(() => {
+				createjs.Sound.play("n6");
+				addNumber("6")
+			});
+			$("#b7").click(() => {
+				createjs.Sound.play("n7");
+				addNumber("7")
+			});
+			$("#b8").click(() => {
+				createjs.Sound.play("n8");
+				addNumber("8")
+			});
+			$("#b9").click(() => {
+				createjs.Sound.play("n9");
+				addNumber("9")
+			});
+			$("#b0").click(() => {
+				createjs.Sound.play("n0");
+				addNumber("0")
+			});
+			$("#bb").click(() => {
+				addNumber("!");
+			});
+			$("#bd").click(() => {
+				addNumber(".");
+			});
+			$("#speakIt").click(speakIt);
+			$("#clear").click(clearIt);
+		}
+
+		function addNumber(num) {
+			var currentText = $("#numInput").val();
+			if (typeof(currentText) === "undefined") currentText = "";
+			if (num != "!") {
+				var currentInt = parseInt(currentText);
+				if (currentText == "E") {
+					currentText = num;
+				} else if (num == ".") {
+					currentText = (currentText.indexOf(".") == -1) ? currentText.concat(num) : currentText;
+				} else {
+					currentText = currentInt == 0 ? (currentText.indexOf(".") != -1) ? currentText.concat(num) : num : currentText.concat(num)
+				}
+			} else {
+				currentText = currentText == "" ? "" : currentText.substr(0, currentText.length - 1);
+			}
+			$("#numInput").val(currentText);
+		}
+
+		function clearIt() {
+			$("#numInput").val("");
+		}
+
+		function speakIt() {
+			soundArr = [];
+			var num = "0";
+			var all = $("#numInput").val();
+			var radix = all.split(".");
+			var dec = "";
+			var numInField = radix[0];
+			if (isNaN(numInField) ) num = "E"; 
+			else if (numInField == "") num = "0";
+			else {
+				var number = parseInt(numInField);
+				if (number >= 1000000000) num = "E";
+				else if (number < 0) num = "E";
+				else num = number.toString();
+			}
+			if (num == "E") {
+				soundArr.push("nerr");
+				$("#numInput").val("E");
+			} else {
+				if (num != "0") { //we'll handle zero later.
+					if (num.length > 6) {
+						doMillions(num);
+					} else if (num.length > 3){
+						doThousands(num);
+					} else {
+						num = fillout(num);
+						doLittles(num);
+					}
+				}
+				if (radix.length == 2){
+					var dec = radix[1];
+					//remove trailing zeroes (until last zero if it's "000...")
+					while (dec.charAt(dec.length - 1) == "0") {
+						dec = dec.substr(0, dec.length - 1)
+					}
+					if (dec != "") {
+						//floor to hundred thousandths if needed (no millionths)
+						if (dec.length > 5) {
+							dec = dec.substr(0, 5);
+						}
+						
+						$("#numInput").val(radix[0] + "." + dec);
+						
+						var decNum = parseInt(dec).toString();
+
+						var isSingle = decNum == "1";
+						if (num != 0) { //num from above is zero? Don't use and.
+							soundArr.push('nd'); //and...
+						}
+
+						if (decNum.length > 3){
+							doThousands(decNum);
+						} else {
+							decNum = fillout(decNum);
+							doLittles(decNum);
+						}
+						switch(dec.length) {
+							case 1:
+								soundArr.push(isSingle ? 'nxth' : 'nxths');
+								break;
+							case 2:
+								soundArr.push(isSingle ? 'ncth' : 'ncths');
+								break;
+							case 3:
+								soundArr.push("nkths");
+								break;
+							case 4:
+								soundArr.push("n10");
+								soundArr.push("nkths");
+								break;
+							default:
+								soundArr.push("nc");
+								soundArr.push("nkths");
+
+						}
+						if (num == 0 && dec == "") {
+							soundArr.push("n0");
+						}
+					}
+					else {
+						$("#numInput").val(radix[0]);
+					}
+				}
+				if (num == "0" && !dec) {
+					$("#numInput").val("0");
+					soundArr.push("n0");
+				}
+			}
+			doTheSound();
+		}
+
+		function doTheSound() {
+			$(":button").prop("disabled", "disabled");
+			if (soundArr.length == 0) {
+				$(":button").prop("disabled", false);
+			} else {
+				playSound(soundArr.shift());
+			}
+		}
+
+		function playSound(snd) {
+			let sound = createjs.Sound.play(snd);
+			sound.on("complete", doTheSound);
+		}
+		
+		function checkNext() {
+			soundArr.shift();
+			if (soundArr.length > 0) {
+				soundArr[0].play();
+			}
+		}
+
+		function doLittles(numlet) {
+			var hasTeen = false;
+			//hundreds
+			if (numlet.charAt(0) != "0") {
+				var audFile0 = 'n' + numlet.charAt(0);
+				soundArr.push(audFile0);
+				soundArr.push('nc');
+			}
+			//tens
+			if (numlet.charAt(1) != "0") {
+				if (numlet.charAt(1) == "1") { //We got some teens here.
+					var teen = numlet.substring(1);
+					soundArr.push("n"+ teen);
+					hasTeen = true;
+				} else {
+					soundArr.push("n" + numlet.charAt(1) + "0");
+				}
+			}
+			//ones
+			if (!hasTeen && numlet.charAt(2) != "0") {
+				soundArr.push("n" + numlet.charAt(2));
+			}
+		}
+		function doThousands(numlet) {
+
+			var littles = numlet.slice(-3);
+			var thous = numlet.slice(0, -3);
+			thous = fillout(thous);
+			doLittles(thous);
+			if (parseInt(thous) != 0) soundArr.push("nk");
+			doLittles(littles);
+		}
+		function doMillions(num) {
+			var thous = num.slice(-6);
+			var mills = num.slice(0, -6);
+
+			mills = fillout(mills);
+			doLittles(mills);
+			soundArr.push("nm");
+			doThousands(thous);
+		}
+
+		function fillout (num) {
+			while (num.length < 3) {
+				num = "0".concat(num);
+			}
+			return num;
+		}
+		
+
+	</script>
+</head>
+
+<body>
+	<!-- Audio Objects -->
+
+
+	
+	
+	
+	<!-- End Audio Objects -->
+	<div class="main" style="visibility: hidden;">
+		<div id="buttons">
+			<div class="buttonrow">
+				<button id="b1" class="button">1</button>
+				<button id="b2" class="button">2</button>
+				<button id="b3" class="button">3</button>
+			</div>
+			<div class="buttonrow">
+				<button id="b4" class="button">4</button>
+				<button id="b5" class="button">5</button>
+				<button id="b6" class="button">6</button>
+			</div>
+			<div class="buttonrow">
+				<button id="b7" class="button">7</button>
+				<button id="b8" class="button">8</button>
+				<button id="b9" class="button">9</button>
+			</div>
+		</div>
+		<div class="buttonrow">
+			<button id="bb" class="button"><</button>
+			<button id="b0" class="button">0</button>
+			<button id="bd" class="button">.</button>
+		</div>
+		<span id="instructions">Enter any number [0 <= x < 1 billion] above.<br/>Decimal precision up to hunded thousandths.</span><br/>
+		<input id="numInput" type="text" readonly value=""><br />
+		<button id="speakIt" class="button2" pattern>Speak It!</button>
+		<button id="clear" class="button2" pattern>Clear</button>
+	</div>
+</body>
+</html>
