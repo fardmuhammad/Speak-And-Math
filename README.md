@@ -1,13 +1,13 @@
 # Speak-And-Math
 My attempt at recreating and extending the 1970s Texas Instruments toy "Speak &amp; Math" in Javascript (and possibly other programming environs if needed). 
 
-Planned games/features include:
+Planned games/features include<br />
 Original games:
 - Solve It
 - Write It 
 - Greater Than/Less Than
 - Number Stumper
-- Word Problems
+- Word Problems<br />
 New features
 - Calculator
 
